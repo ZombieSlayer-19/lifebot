@@ -12,7 +12,7 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.categories = fs.readdirSync("./main/commands");
 ["command"].forEach((handler) => {
-    require(`./main/handler/${handler}`)
+    require(`./main/handler/${handler}`)(bot)
 });
 
 bot.login(process.env.token);

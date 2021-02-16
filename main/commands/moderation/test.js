@@ -1,8 +1,20 @@
+const Discord = require("discord.js");
+
 module.exports = {
     name: "test",
     aliases: ["--t"],
     category: "moderation",
     run: async(bot,message,args) => {
-        message.channel.send("Works");
+        var msg = await message.channel.send("Testing Commands...");
+
+        var testEmbed = new Discord.MessageEmbed()
+        .setColor("RED")
+        .setTitle("Commands Tested")
+        .setThumbnail(bot.user.displayAvatarURL({dynamic: true}))
+        .addField("Commands Status", "Working")
+        .addField("Bot Ping", `${Math.round(bot.ws.ping)}ms`)
+
+        msg.delete();
+        message.channel.send(testEmbed);
     }
 }
