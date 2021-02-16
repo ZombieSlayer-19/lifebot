@@ -1,0 +1,30 @@
+{
+  "name": "lifebot",
+  "version": "1.0.0",
+  "description": "Life Bot is a discord bot project where the goal is to keep the bot alive by sending messages and using the bot, its death will result in a reset of everything on the server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZombieSlayer-19/lifebot.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "Discord.js",
+    "TypeScript",
+    "GitHub"
+  ],
+  "author": "ZombieSlayer-19",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZombieSlayer-19/lifebot/issues"
+  },
+  "homepage": "https://github.com/ZombieSlayer-19/lifebot#readme",
+  "dependencies": {
+    "beautify": "0.0.8",
+    "discord.js": "^12.5.1",
+    "fs": "0.0.1-security"
+  }
+}
