@@ -8,6 +8,15 @@ const bot = new Discord.Client();
 
 const fs = require("fs");
 
+const botLife = require("./main/bot_config/information.json");
+const botLife_path = "./main/bot_config/life.json";
+
+const global = {
+    Data_save: fs.writeFile(botLife_path, beautify(JSON.stringify(botLife), {format: "json"}), (err) => {
+        if(err) console.log(err);
+    })
+}
+
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.categories = fs.readdirSync("./main/commands");
@@ -19,10 +28,20 @@ bot.login(process.env.token);
 
 bot.on("ready", async() => {
     console.log("Online..");
+    console.log(process.env.bot_health);
 });
+
+var sessionLife = {
+    healthPoints: 0
+}
 
 bot.on("message", async(message) => {
     if(message.author.bot) return;
+
+    var botHealth = botLife[bot.user.id].health;
+
+    var pointsPerHUnit = 50;
+    var HUnit = 1;
 
     var prefix = process.env.prefix;
 
