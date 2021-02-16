@@ -7,14 +7,18 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 
 const fs = require("fs");
+const beautify = require("beautify");
+const dualox = require("dualox-js");
 
-const botLife = require("./main/bot_config/information.json");
+const botLife = require("./main/bot_config/life.json");
 const botLife_path = "./main/bot_config/life.json";
 
 const global = {
-    Data_save: fs.writeFile(botLife_path, beautify(JSON.stringify(botLife), {format: "json"}), (err) => {
-        if(err) console.log(err);
-    })
+    Data_save: async function() {
+        fs.writeFile(botLife_path, beautify(JSON.stringify(botLife), {format: "json"}), (err) => {
+            if(err) console.log(err);
+        })
+    } 
 }
 
 bot.commands = new Discord.Collection();
@@ -28,20 +32,28 @@ bot.login(process.env.token);
 
 bot.on("ready", async() => {
     console.log("Online..");
-    console.log(process.env.bot_health);
 });
 
 var sessionLife = {
     healthPoints: 0
 }
 
+const botHealth = botLife["811264208627826759"].health;
+
 bot.on("message", async(message) => {
     if(message.author.bot) return;
 
-    var botHealth = botLife[bot.user.id].health;
+    var pointsPerHUnit = 5;
 
-    var pointsPerHUnit = 50;
-    var HUnit = 1;
+    sessionLife.healthPoints = sessionLife.healthPoints + 1;
+
+    if(sessionLife.healthPoints == pointsPerHUnit) {
+        botLife["811264208627826759"].health = botHealth + 1;
+        global.Data_save(botLife);
+        sessionLife.healthPoints = 0;
+    }
+
+    console.log(sessionLife.healthPoints);
 
     var prefix = process.env.prefix;
 
