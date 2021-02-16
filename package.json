@@ -4,7 +4,7 @@
   "description": "Life Bot is a discord bot project where the goal is to keep the bot alive by sending messages and using the bot, its death will result in a reset of everything on the server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ."
   },
   "repository": {
     "type": "git",
