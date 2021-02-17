@@ -39,6 +39,7 @@ bot.on("ready", async() => {
 });
 
 const User = require("./models/user.js");
+const user = require("./models/user.js");
 
 var sessionLife = {
     healthPoints: 0
@@ -95,6 +96,70 @@ bot.on("message", async(message) => {
         }
     }
     // End Bot Health //
+
+    var addCoins_chance = dualox.randomNumber(1, 10);
+    
+    if(addCoins_chance == 1) {
+        var addCoins = dualox.randomNumber(2, 10);
+
+        User.findOne({
+            guildID: guild.id,
+            userID: message.author.id
+        }, (err, user) => {
+            if(err) console.error(err);
+
+            User.updateOne({
+                coins: user.coins + addCoins
+            })
+            .then(result => console.log(result))
+            .catch(err => console.error(err));
+        });
+    }
+
+    var msgXpValue = dualox.randomNumber(5, 15);
+
+    User.findOne({
+        guildID: guild.id,
+        userID: message.author.id
+    }, (err, user) => {
+        if(err) console.error(err);
+
+        await User.updateOne({
+            userID: message.author.id
+        }, {
+            $set: {xp: user.xp + msgXpValue}
+        });
+
+        var curXp = user.xp;
+        var curLevel = user.level;
+        var curRank = user.rank;
+
+        var nextLevel = curLevel * 100;
+
+        if(nextLevel <= curXp) {
+            User.updateOne({
+                userID: message.author.id
+            }, {
+                $set: {level: curLevel + 1}
+            });
+
+            curLevel = user.level;
+            message.channel.send("You Leveled Up!");
+        }
+
+        var nextRank = curRank * 10;
+
+        if(nextRank <= curLevel) {
+            User.updateOne({
+                userID: message.author.id
+            }, {
+                $set: {rank: curRank + 1}
+            });
+
+            curRank = user.rank;
+            message.channel.send("You Ranked Up!");
+        }
+    });
 
     var prefix = process.env.prefix;
 
