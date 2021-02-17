@@ -46,12 +46,18 @@ bot.on("message", async(message) => {
     var pointsPerHUnit = 20;
     const curHPoints = sessionLife.healthPoints;
 
-    sessionLife.healthPoints = curHPoints + 1;
+    addHealth();
 
-    if(sessionLife.healthPoints == pointsPerHUnit) {
-        botLife["811264208627826759"].health = botHealth + 1;
-        global.Data_save(botLife);
-        sessionLife.healthPoints = 0;
+    function addHealth() {
+        if(botHealth == 500) return;
+
+        sessionLife.healthPoints = curHPoints + 1;
+
+        if(sessionLife.healthPoints == pointsPerHUnit) {
+            botLife["811264208627826759"].health = botHealth + 1;
+            global.Data_save(botLife);
+            sessionLife.healthPoints = 0;
+        }
     }
 
     var prefix = process.env.prefix;
