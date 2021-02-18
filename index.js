@@ -7,20 +7,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 
 const fs = require("fs");
-const beautify = require("beautify");
 const dualox = require("dualox-js");
 const mongoose = require("mongoose");
-
-const botLife = require("./main/bot_config/life.json");
-const botLife_path = "./main/bot_config/life.json";
-
-const global = {
-    Data_save: async function() {
-        fs.writeFile(botLife_path, beautify(JSON.stringify(botLife), {format: "json"}), (err) => {
-            if(err) console.log(err);
-        })
-    } 
-}
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
@@ -39,7 +27,7 @@ bot.on("ready", async() => {
 });
 
 const User = require("./models/user.js");
-const user = require("./models/user.js");
+const theBot = require("./models/bot.js");
 
 var sessionLife = {
     healthPoints: 0
@@ -50,10 +38,32 @@ bot.on("message", async(message) => {
 
     const guild = message.guild;
 
+    theBot.findOne({
+        guildID: guild.id,
+        botID: bot.user.id
+    }, async (err, Bot) => {
+        if(err) console.error(err);
+
+        if(!Bot) {
+            const newBot = new theBot({
+                _id: mongoose.Types.ObjectId(),
+                guildID: guild.id,
+                botID: bot.user.id,
+                xp: 0,
+                level: 1,
+                health: 500
+            });
+
+            await newBot.save()
+            .then(result => console.log(result))
+            .catch(err => console.error(err));
+        }
+    });
+
     User.findOne({
         guildID: guild.id,
         userID: message.author.id
-    }, (err, user) => {
+    }, async (err, user) => {
         if(err) console.error(err);
 
         if(!user) {
@@ -70,58 +80,114 @@ bot.on("message", async(message) => {
                 coins: 50
             });
 
-            newUser.save()
+            await newUser.save()
             .then(result => console.log(result))
             .catch(err => console.error(err));
+        }else {
+            // Coins
+            var addCoins_chance = dualox.randomNumber(1, 7);
+
+            if(addCoins_chance == 1) {
+                var addCoins = dualox.randomNumber(2, 6);
+        
+                await User.updateOne({
+                    coins: user.coins + addCoins
+                });
+            }
+
+            // Leveling
+            var msgXpValue = dualox.randomNumber(5, 15);
+
+            await User.updateOne({
+                xp: user.xp + msgXpValue
+            });
+    
+            var curXp = user.xp;
+            var curLevel = user.level;
+            var curRank = user.rank;
+    
+            var nextLevel = curLevel * 500;
+    
+            if(nextLevel <= curXp) {
+                await User.updateOne({
+                    level: curLevel + 1
+                });
+    
+                curLevel = user.level;
+                message.channel.send("You Leveled Up!");
+            }
+    
+            var nextRank = curRank * 10;
+    
+            if(nextRank <= curLevel) {
+                await User.updateOne({
+                    rank: curRank + 1
+                });
+    
+                curRank = user.rank;
+                message.channel.send("You Ranked Up!");
+            }
         }
     });
 
-    // Bot Health //
-    const botHealth = botLife["811264208627826759"].health;
+    theBot.findOne({
+        guildID: guild.id,
+        botID: bot.user.id
+    }, async (err, Bot) => {
+        if(err => console.error(err));
 
-    var pointsPerHUnit = 20;
-    const curHPoints = sessionLife.healthPoints;
+        var botHealth = Bot.health;
 
-    addHealth();
+        var pointsPerHUnit = 20;
+        var curHPoints = sessionLife.healthPoints;
 
-    function addHealth() {
-        if(botHealth == 500) return;
+        addHealth();
+        addXp();
+        addLevel();
 
-        sessionLife.healthPoints = curHPoints + 1;
+        async function addHealth() {
+            if(botHealth == 500) return;
 
-        if(sessionLife.healthPoints == pointsPerHUnit) {
-            botLife["811264208627826759"].health = botHealth + 1;
-            global.Data_save(botLife);
-            sessionLife.healthPoints = 0;
+            sessionLife.healthPoints = curHPoints + 1;
+
+            if(sessionLife.healthPoints == pointsPerHUnit) {
+                await theBot.updateOne({
+                    botID: bot.user.id
+                }, {
+                    $set: {health: Bot.health + 1}
+                });
+
+                sessionLife.healthPoints = 0;
+            }
         }
-    }
-    // End Bot Health //
 
-    var addCoins_chance = dualox.randomNumber(1, 10);
-    
-    if(addCoins_chance == 1) {
-        var addCoins = dualox.randomNumber(2, 10);
+        async function addXp() {
+            await theBot.updateOne({
+                botID: bot.user.id
+            }, {
+                $set: {xp: Bot.xp + dualox.randomNumber(5, 15)}
+            });
+        }
 
-        User.findOne({
-            guildID: guild.id,
-            userID: message.author.id
-        }, (err, user) => {
-            if(err) console.error(err);
+        async function addLevel() {
+            var nextLevel = Bot.level * 500;
 
-            User.updateOne({
-                coins: user.coins + addCoins
-            })
-            .then(result => console.log(result))
-            .catch(err => console.error(err));
-        });
-    }
+            if(nextLevel <= Bot.xp) {
+                await theBot.updateOne({
+                    botID: bot.user.id
+                }, {
+                    $set: {level: bot.level + 1}
+                });
+            }
+        }
+    });
 
     var msgXpValue = dualox.randomNumber(5, 15);
 
     User.findOne({
         guildID: guild.id,
         userID: message.author.id
-    }, (err, user) => {
+    }, async (err, user) => {
         if(err) console.error(err);
 
         await User.updateOne({
@@ -134,10 +200,10 @@ bot.on("message", async(message) => {
         var curLevel = user.level;
         var curRank = user.rank;
 
-        var nextLevel = curLevel * 100;
+        var nextLevel = curLevel * 500;
 
         if(nextLevel <= curXp) {
-            User.updateOne({
+            await User.updateOne({
                 userID: message.author.id
             }, {
                 $set: {level: curLevel + 1}
@@ -150,7 +216,7 @@ bot.on("message", async(message) => {
         var nextRank = curRank * 10;
 
         if(nextRank <= curLevel) {
-            User.updateOne({
+            await User.updateOne({
                 userID: message.author.id
             }, {
                 $set: {rank: curRank + 1}
