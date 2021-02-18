@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const mongoose = require("mongoose");
 const dualox = require("dualox-js");
 const User = require("../../../models/user");
 
