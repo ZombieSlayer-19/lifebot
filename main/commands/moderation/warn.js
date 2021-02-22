@@ -22,7 +22,7 @@ module.exports = {
         }, async (err, user) => {
             if(err) console.error(err);
 
-            await User.updateOne({
+            await user.updateOne({
                 warnCount: user.warnCount + 1
             });
             

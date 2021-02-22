@@ -9,7 +9,8 @@ const userSchema = mongoose.Schema({
     xp: Number,
     level: Number,
     rank: Number,
-    coins: Number
+    coins: Number,
+    bio: String
 });
 
 module.exports = mongoose.model("User", userSchema, "users");

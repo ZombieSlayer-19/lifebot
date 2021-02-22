@@ -38,6 +38,8 @@ bot.on("message", async(message) => {
 
     const guild = message.guild;
 
+    if(!guild) return message.author.send("This bot only works on servers right now..");
+
     // Database__BOT
     theBot.findOne({
         guildID: guild.id,
@@ -119,7 +121,8 @@ bot.on("message", async(message) => {
                 xp: 0,
                 level: 1,
                 rank: 1,
-                coins: 50
+                coins: 50,
+                bio: "When this user writes their bio, this is where their bio will be :)"
             });
 
             await newUser.save()
@@ -138,37 +141,40 @@ bot.on("message", async(message) => {
             }
 
             // Leveling
-            var msgXpValue = dualox.randomNumber(5, 15);
+            // var msgXpValue = dualox.randomNumber(5, 13);
 
-            await User.updateOne({
-                xp: user.xp + msgXpValue
-            }).catch(err => console.error(err));
+            // await User.updateOne({
+            //     guildID: guild.id,
+            //     userID: message.author.id
+            // }, {
+            //     $set: {xp: user.xp + msgXpValue}
+            // }).catch(err => console.error(err));
     
-            var curXp = user.xp;
-            var curLevel = user.level;
-            var curRank = user.rank;
+            // var curXp = user.xp;
+            // var curLevel = user.level;
+            // var curRank = user.rank;
     
-            var nextLevel = curLevel * 500;
+            // var nextLevel = curLevel * 500;
     
-            if(nextLevel <= curXp) {
-                await User.updateOne({
-                    level: curLevel + 1
-                }).catch(err => console.error(err));
+            // if(nextLevel <= curXp) {
+            //     await User.updateOne({
+            //         level: curLevel + 1
+            //     }).catch(err => console.error(err));
     
-                curLevel = user.level;
-                message.channel.send("You Leveled Up!");
-            }
+            //     curLevel = user.level;
+            //     message.channel.send("You Leveled Up!");
+            // }
     
-            var nextRank = curRank * 10;
+            // var nextRank = curRank * 10;
     
-            if(nextRank <= curLevel) {
-                await User.updateOne({
-                    rank: curRank + 1
-                }).catch(err => console.error(err));
+            // if(nextRank <= curLevel) {
+            //     await User.updateOne({
+            //         rank: curRank + 1
+            //     }).catch(err => console.error(err));
     
-                curRank = user.rank;
-                message.channel.send("You Ranked Up!");
-            }
+            //     curRank = user.rank;
+            //     message.channel.send("You Ranked Up!");
+            // }
         }
     });
     
