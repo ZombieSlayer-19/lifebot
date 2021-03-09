@@ -38,7 +38,7 @@ module.exports = {
                     msg.delete();
 
                     var noTicket = new Discord.MessageEmbed()
-                    .setColor("RED")
+                    .setColor(Discord.EmbedColor)
                     .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                     .setTitle("No Ticket Found...")
                     .setDescription(`There was no ticket found for ${noneFound} Please make sure the id or mention is typed in correctly..`)
@@ -52,7 +52,7 @@ module.exports = {
                     msg.delete();
 
                     var yesTicket = new Discord.MessageEmbed()
-                    .setColor("GREEN")
+                    .setColor(Discord.EmbedColor)
                     .setThumbnail(members.displayAvatarURL({dynamic: true}))
                     .setTitle(`${members.username}'s Ticket`)
                     .addField("Ticket Author:", "===============")
@@ -67,6 +67,8 @@ module.exports = {
                     .addField("Ticket Closed Date:", ticket.closedDate, true)
                     .addField("Ticket Reason:", ticket.ticketReason)
                     .addField("Ticket Solution:", ticket.ticketSolution)
+                    .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                    .setTimestamp()
 
                     message.channel.send(yesTicket);
                 }, 1500);

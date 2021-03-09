@@ -4,7 +4,7 @@ const User = require("../../../models/user.js");
 module.exports = {
     name: "user",
     aliases: ["member", "--u"],
-    category: "info",
+    category: "user",
     usage: "!user [@member]",
     description: "Displays information on you or the @member",
     run: async(bot,message,args) => {
@@ -17,7 +17,7 @@ module.exports = {
             if(err) console.error(err);
 
             var userEmbed = new Discord.MessageEmbed()
-            .setColor("RED")
+            .setColor(Discord.EmbedColor)
             .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
             .setTitle(`${member.user.username}'s Information!`)
             .setDescription(`Bio: **${user.bio}**`)
@@ -31,6 +31,8 @@ module.exports = {
             .addField("Warns:", user.warnCount, true)
             .addField("Kicks:", user.kickCount, true)
             .addField("Bans:", user.banCount)
+            .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+            .setTimestamp()
 
             message.channel.send(userEmbed);
         });

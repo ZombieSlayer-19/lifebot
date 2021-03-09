@@ -1,7 +1,7 @@
 {
   "name": "lifebot",
   "version": "1.0.1",
-  "build": "1.11",
+  "build": "1.13",
   "description": "Life Bot is a discord bot project where the goal is to keep the bot alive by sending messages and using the bot, its death will result in a reset of everything on the server",
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,12 @@
   "dependencies": {
     "beautify": "0.0.8",
     "canvas": "^2.6.1",
+    "discord-paginationembed": "^2.1.0",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "dualox-js": "^1.2.0",
     "fs": "0.0.1-security",
+    "mathjs": "^9.2.0",
     "mongoose": "^5.10.7"
   }
 }

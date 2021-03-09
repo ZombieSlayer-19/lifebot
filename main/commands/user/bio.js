@@ -16,10 +16,12 @@ module.exports = {
 
             if(!args[0]) {
                 var bioEmbed = new Discord.MessageEmbed()
-                .setColor("RED")
+                .setColor(Discord.EmbedColor)
                 .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                 .setTitle(`${message.author.username}'s Bio!`)
                 .addField("My Bio:", user.bio)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(bioEmbed);
             }else {
@@ -30,10 +32,12 @@ module.exports = {
                 });
 
                 var bioEmbed = new Discord.MessageEmbed()
-                .setColor("RED")
+                .setColor(Discord.EmbedColor)
                 .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                 .setTitle(`${message.author.username}'s New Bio!`)
                 .addField("My Bio:", newBio)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(bioEmbed);
             }

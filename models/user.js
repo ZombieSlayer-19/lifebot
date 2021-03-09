@@ -7,7 +7,9 @@ const userSchema = mongoose.Schema({
     kickCount: Number,
     banCount: Number,
     xp: Number,
+    xpForLevelUp: Number,
     level: Number,
+    levelForRankUp: Number,
     rank: Number,
     coins: Number,
     bio: String

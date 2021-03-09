@@ -27,10 +27,12 @@ module.exports = {
             });
             
             var warnedEmbed = new Discord.MessageEmbed()
-            .setColor("RED")
+            .setColor(Discord.EmbedColor)
             .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
             .setTitle(`${member.user.username} Has Been Warned!`)
             .addField("Times Warned:", user.warnCount + 1)
+            .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+            .setTimestamp()
             if(reason) warnedEmbed.addField("Reason for warn:", reason)
 
             message.channel.send(warnedEmbed);

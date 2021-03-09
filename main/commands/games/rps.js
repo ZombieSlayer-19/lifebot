@@ -73,12 +73,14 @@ module.exports = {
                 });
 
                 var wonEmbed = new Discord.MessageEmbed()
-                .setColor("GREEN")
+                .setColor(Discord.EmbedColor)
                 .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                 .setTitle("Rock, Paper, Scissors!")
                 .addField("You Won! :open_mouth:", "10 Coins were added to your account!")
                 .addField("You Rolled", `${cString} | ${cEmoji}`)
                 .addField("I Rolled", `${bString} | ${bEmoji}`)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(wonEmbed);
             }
@@ -89,24 +91,28 @@ module.exports = {
                 });
 
                 var lostEmbed = new Discord.MessageEmbed()
-                .setColor("RED")
+                .setColor(Discord.EmbedColor)
                 .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                 .setTitle("Rock, Paper, Scissors!")
                 .addField("You Lost :frowning:", "10 Coins were removed from your account..")
                 .addField("You Rolled", `${cString} | ${cEmoji}`)
                 .addField("I Rolled", `${bString} | ${bEmoji}`)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(lostEmbed);
             }
 
             async function draw() {
                 var drawEmbed = new Discord.MessageEmbed()
-                .setColor("BLUE")
+                .setColor(Discord.EmbedColor)
                 .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                 .setTitle("Rock, Paper, Scissors!")
                 .addField("It Was A Draw :neutral_face:", "No coins were added or removed from your account..")
                 .addField("You Rolled", `${cString} | ${cEmoji}`)
                 .addField("I Rolled", `${bString} | ${bEmoji}`)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(drawEmbed);
             }

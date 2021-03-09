@@ -24,10 +24,18 @@ bot.login(process.env.token);
 
 bot.on("ready", async() => {
     console.log("Online..");
+
+    var activities = [`${bot.guilds.cache.size<2?"1 Server": `${bot.guilds.cache.size} Total Servers`}`, `${bot.commands.size} Total Commands`, `get help, !help`, `Genesis Music`], i = 0;
+    var types = ["WATCHING", "PLAYING", "PLAYING", "LISTENING"], x = 0;
+
+    setInterval(() => {
+        bot.user.setActivity({type: `${types[x++ % types.length]}`, name: `${activities[i++ % activities.length]}`});
+    }, 10000)
 });
 
 const User = require("./models/user.js");
 const theBot = require("./models/bot.js");
+const Audit = require("./models/audit.js");
 
 var sessionLife = {
     healthPoints: 0
@@ -119,7 +127,9 @@ bot.on("message", async(message) => {
                 kickCount: 0,
                 banCount: 0,
                 xp: 0,
+                xpForLevelUp: 500,
                 level: 1,
+                levelForRankUp: 10,
                 rank: 1,
                 coins: 50,
                 bio: "When this user writes their bio, this is where their bio will be :)"
@@ -141,43 +151,45 @@ bot.on("message", async(message) => {
             }
 
             // Leveling
-            // var msgXpValue = dualox.randomNumber(5, 13);
+            var msgXpValue = dualox.randomNumber(5, 13);
 
-            // await User.updateOne({
-            //     guildID: guild.id,
-            //     userID: message.author.id
-            // }, {
-            //     $set: {xp: user.xp + msgXpValue}
-            // }).catch(err => console.error(err));
-    
-            // var curXp = user.xp;
-            // var curLevel = user.level;
-            // var curRank = user.rank;
-    
-            // var nextLevel = curLevel * 500;
-    
-            // if(nextLevel <= curXp) {
-            //     await User.updateOne({
-            //         level: curLevel + 1
-            //     }).catch(err => console.error(err));
-    
-            //     curLevel = user.level;
-            //     message.channel.send("You Leveled Up!");
-            // }
-    
-            // var nextRank = curRank * 10;
-    
-            // if(nextRank <= curLevel) {
-            //     await User.updateOne({
-            //         rank: curRank + 1
-            //     }).catch(err => console.error(err));
-    
-            //     curRank = user.rank;
-            //     message.channel.send("You Ranked Up!");
-            // }
+            await User.updateOne({
+                guildID: guild.id,
+                userID: message.author.id
+            }, {
+                $set: {xp: user.xp + msgXpValue}
+            }).catch(err => console.error(err));
+
+            var curXp = await user.xp;
+
+            if(curXp >= user.xpForLevelUp) {
+                await User.updateOne({
+                    guildID: guild.id,
+                    userID: message.author.id
+                }, {
+                    $set: {
+                        level: user.level + 1,
+                        xpForLevelUp: user.xpForLevelUp + 100,
+                        xp: 0
+                    }
+                }).catch(err => console.error(err));
+            }
+
+            var curLevel = await user.level;
+
+            if(curLevel >= user.levelForRankUp) {
+                await User.updateOne({
+                    guildID: guild.id,
+                    userID: message.author.id
+                }, {
+                    $set: {
+                        rank: user.rank + 1,
+                        levelForRankUp: user.levelForRankUp + 5
+                    }
+                }).catch(err => console.error(err));
+            }
         }
     });
-    
 
     var prefix = process.env.prefix;
 
@@ -190,6 +202,20 @@ bot.on("message", async(message) => {
 
     var command = bot.commands.get(cmd);
     if(!command) command = bot.commands.get(bot.aliases.get(cmd));
-    if(command) command.run(bot,message,args);
+    if(command) {
+        command.run(bot,message,args);
+
+        const newAudit = new Audit({
+            _id: mongoose.Types.ObjectId(),
+            userID: message.author.id,
+            username: message.author.username,
+            command_name: prefix + command.name,
+            full_command: message.content,
+            date_time: dualox.currentDate()
+        });
+
+        await newAudit.save()
+        .catch(err => console.error(err));
+    }
     else message.channel.send(`\`${message.content}\` is not a valid command!`);
 });

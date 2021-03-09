@@ -20,7 +20,9 @@ module.exports = {
             if(err) console.error(err);
 
             if(!ticket) {
+                var msg = await message.channel.send("Creating Ticket...");
                 makeTicket();
+                msg.delete();
             }else {
                 if(ticket.allowNewTicket == false) {
                     return message.channel.send(`You already have a ticket that is not closed yet with the id of \`${ticket.ticketID}\``);
@@ -109,6 +111,8 @@ module.exports = {
                 .setTitle("Ticket Created!")
                 .setDescription(`Please go to the new created channel named \`🟢${message.author.username}-${generatedTicketID}\` This is where your ticket will be handled :)`)
                 .addField("Ticket ID:", `\`${generatedTicketID}\` Keep this ticket ID in case you need the information of the ticket later on..`)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 message.channel.send(newTicketEmbed);
 
@@ -118,6 +122,8 @@ module.exports = {
                 .setTitle("Welcome To Your Ticket Channel!")
                 .setDescription("This channel will be where your ticket is handled, a moderator will claim your ticket soon to help you with your issue, but before someone claims your ticket, we'd perfer if you let us know your issue now, so go ahead! Type in your question or concern you have now so the process will go faster when a moderator claims your ticket. :slight_smile:")
                 .addField("Ticket ID:", `\`${generatedTicketID}\` This is your ticket ID, keep it in case you need this tickets information in the future..`)
+                .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                .setTimestamp()
 
                 ticketChannel.send(ticketChannelEmbed);
             }

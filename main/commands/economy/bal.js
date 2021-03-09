@@ -17,9 +17,11 @@ module.exports = {
             if(err) console.error(err);
 
             var coinEmbed = new Discord.MessageEmbed()
-            .setColor("RED")
+            .setColor(Discord.EmbedColor)
             .setTitle(`${member.user.username} Has \`${user.coins}\` Coins!`)
             .setFooter("Use coins to pay other members or to play games!", member.user.displayAvatarURL({dynamic: true}))
+            .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+            .setTimestamp()
 
             message.channel.send(coinEmbed);
         }).catch(err => console.error(err));

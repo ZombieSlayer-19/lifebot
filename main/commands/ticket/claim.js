@@ -41,10 +41,12 @@ module.exports = {
                     msg.delete();
 
                     var noTicket = new Discord.MessageEmbed()
-                    .setColor("RED")
+                    .setColor(Discord.EmbedColor)
                     .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                     .setTitle("No Ticket Found...")
                     .setDescription(`There was no ticket found for ${noneFound} Please make sure the id or mention is typed in correctly..`)
+                    .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                    .setTimestamp()
 
                     message.channel.send(noTicket);
                 }, 1500);
@@ -78,7 +80,7 @@ module.exports = {
                     message.channel.send(`You have succesfully claimed \`${members.username}'s\` ticket! `);
 
                     var claimedEmbed = new Discord.MessageEmbed()
-                    .setColor("YELLOW")
+                    .setColor(Discord.EmbedColor)
                     .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
                     .setTitle(`${message.author.username} Has Claimed Your Ticket!`)
                     .addField("Ticket Author:", members, true)
@@ -86,6 +88,8 @@ module.exports = {
                     .addField("Claimed Info", "===============")
                     .addField("Claimed Username:", message.author.username)
                     .addField("Claimed ID:", message.author.id)
+                    .setFooter(`${bot.user.username} | ${bot.commands.size} Total Commands`, bot.user.displayAvatarURL({dynamic: true}))
+                    .setTimestamp()
 
                     ticketChannel.send(claimedEmbed);
                 }, 1500);
